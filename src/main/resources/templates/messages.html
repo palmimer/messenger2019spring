@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Messages</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Messages</h1>
+        <table>
+                <thead>
+                    <tr>
+                        <td>Üzenet</td>
+                        <td>Küldő</td>
+                        <td>Dátum</td>
+                    </tr>
+                </thead>
+                <tr data-th-each="message: ${messages}">
+                    <td data-th-text="${message.text}"></td>
+                    <td data-th-text="${message.author}"></td>
+                    <td>2019-06-20 12:15</td>
+                </tr>
+            </table>
+    </body>
+</html>

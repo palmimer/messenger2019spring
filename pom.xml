@@ -40,7 +40,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <fork>true</fork>
-                    <mainClass>com.progmatic.hellospring.HelloApplication</mainClass>
+                    <mainClass>com.progmatic.messenger2019spring.MessengerApplication</mainClass>
                 </configuration>
                 <executions>
                     <execution>
