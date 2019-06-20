@@ -23,7 +23,7 @@ and open the template in the editor.
                 <tr data-th-each="message: ${messages}">
                     <td data-th-text="${message.text}"></td>
                     <td data-th-text="${message.author}"></td>
-                    <td>2019-06-20 12:15</td>
+                    <td data-th-text="${{message.dateTime}}"></td>
                 </tr>
             </table>
     </body>

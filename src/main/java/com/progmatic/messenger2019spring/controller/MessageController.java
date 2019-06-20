@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -35,9 +36,25 @@ public class MessageController {
     }
     
     @RequestMapping(value = "/messages", method = RequestMethod.GET)
-    public String listMessages(Model model) {
-        model.addAttribute("messages", messages);
+    public String listMessages(@RequestParam(value = "messageCount", defaultValue = "-1") int messageCount, Model model) {
+        int numOfMessagesToShow = messageCount == -1 ? messages.size() : messageCount;
+        List<Message> messagesToShow = messages.subList(0, Math.min(messages.size(), numOfMessagesToShow));
+        model.addAttribute("messages", messagesToShow);
         
         return "messages";
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

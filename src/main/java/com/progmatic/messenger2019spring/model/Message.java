@@ -6,6 +6,7 @@
 package com.progmatic.messenger2019spring.model;
 
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 public class Message {
     private String text;
     private String author;
-    
+    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime dateTime;
 
     public Message(String text, String author) {
