@@ -3,34 +3,50 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.progmatic.messenger2019spring.model;
+package com.progmatic.messenger2019spring.domain;
 
 import java.time.LocalDateTime;
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
  * @author Varga János
  */
 public class Message {
+
+    private static int prevId;
+    private int id;
     private String text;
     private String author;
-    @DateTimeFormat(pattern = "yyyy/MM/dd HH:mm")
     private LocalDateTime dateTime;
 
+    public Message() {
+        dateTime = LocalDateTime.now();
+        
+        id = prevId++;
+    }
+    
     public Message(String text, String author) {
+        this();
         this.text = text;
         this.author = author;
-        this.dateTime = LocalDateTime.now();
     }
-
-    
     
     public Message(String text, String author, LocalDateTime dateTime) {
+        this();
         this.text = text;
         this.author = author;
         this.dateTime = dateTime;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    
+    
 
     public String getText() {
         return text;

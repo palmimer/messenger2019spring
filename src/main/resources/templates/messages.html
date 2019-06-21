@@ -15,16 +15,20 @@ and open the template in the editor.
         <table>
                 <thead>
                     <tr>
-                        <td>Üzenet</td>
-                        <td>Küldő</td>
-                        <td>Dátum</td>
+                        <th>Id</th>
+                        <th>Üzenet</th>
+                        <th>Küldő</th>
+                        <th>Dátum</th>
                     </tr>
                 </thead>
                 <tr data-th-each="message: ${messages}">
+                    <td><a data-th-href="@{'/messages/'+${message.id}}" data-th-text="${message.id}"></a></td>
                     <td data-th-text="${message.text}"></td>
                     <td data-th-text="${message.author}"></td>
-                    <td data-th-text="${{message.dateTime}}"></td>
+                    <td data-th-text="${message.dateTime}"></td>
                 </tr>
             </table>
+        
+        <a data-th-href="@{messages/create}">New Message</a>
     </body>
 </html>

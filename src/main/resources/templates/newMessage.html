@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>New Messages</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Create a Message</h1>
+        <form method="POST" data-th-action="@{/messages/create}" data-th-object="${message}">
+            <div>
+                <label data-th-for="author">Author:</label>
+                <input type="text" data-th-field="*{author}"/>
+            </div>
+            <div>
+                <label data-th-for="text">Text:</label>
+                <input type="text" data-th-field="*{text}"/>
+            </div>
+
+            <input type="submit" value="Submit"/>
+
+        </form>
+    </body>
+</html>
