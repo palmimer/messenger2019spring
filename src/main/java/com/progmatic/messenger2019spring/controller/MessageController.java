@@ -11,8 +11,10 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +40,7 @@ public class MessageController {
         messages.add(new Message("Meg még ez is", "Test"));
     }
 
-    @RequestMapping(value = "/messages", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/messages"}, method = RequestMethod.GET)
     public String listMessages(@RequestParam(value = "messageCount", defaultValue = "-1") int messageCount,
             @RequestParam(value = "ascending", defaultValue = "true") boolean ascending,
             Model model) {
@@ -68,12 +70,17 @@ public class MessageController {
     }
     
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
-    public String showCreateMessage(@ModelAttribute Message message) {
+    public String showCreateMessage(@ModelAttribute("message") Message message) {
         return "newMessage";
     }
     
     @RequestMapping(value = "/messages/create", method = RequestMethod.POST)
-    public String createMessage(@ModelAttribute Message message) {
+    public String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult bindingResult) {
+        
+        if (bindingResult.hasErrors()) {
+            return "newMessage";
+        }
+        
         messages.add(message);
         return "redirect:/messages";
     }

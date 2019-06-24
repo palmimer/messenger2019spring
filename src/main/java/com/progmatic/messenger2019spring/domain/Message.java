@@ -6,6 +6,9 @@
 package com.progmatic.messenger2019spring.domain;
 
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -15,22 +18,30 @@ public class Message {
 
     private static int prevId;
     private int id;
+
+    @NotNull
+    @NotBlank
+    @Size(min = 10, max = 100)
     private String text;
+    
+    @NotNull
+    @NotBlank
+    @Size(min = 3, message = "Minimum {2} karakter hosszúnak kell lennie!")
     private String author;
     private LocalDateTime dateTime;
 
     public Message() {
         dateTime = LocalDateTime.now();
-        
+
         id = prevId++;
     }
-    
+
     public Message(String text, String author) {
         this();
         this.text = text;
         this.author = author;
     }
-    
+
     public Message(String text, String author, LocalDateTime dateTime) {
         this();
         this.text = text;
@@ -45,8 +56,6 @@ public class Message {
     public void setId(int id) {
         this.id = id;
     }
-    
-    
 
     public String getText() {
         return text;
@@ -71,8 +80,5 @@ public class Message {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
-    
-    
-    
-    
+
 }

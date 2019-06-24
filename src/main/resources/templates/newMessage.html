@@ -11,10 +11,12 @@
             <div>
                 <label data-th-for="author">Author:</label>
                 <input type="text" data-th-field="*{author}"/>
+                <span data-th-if="${#fields.hasErrors('author')}" data-th-errors="*{author}">Author Error</span>
             </div>
             <div>
                 <label data-th-for="text">Text:</label>
                 <input type="text" data-th-field="*{text}"/>
+                <span data-th-if="${#fields.hasErrors('text')}" data-th-errors="*{text}">Text Error</span>
             </div>
 
             <input type="submit" value="Submit"/>
