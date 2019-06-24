@@ -9,16 +9,17 @@ import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
  * @author Varga János
  */
 public class Message {
-
     private static int prevId;
     private int id;
-
     @NotNull
     @NotBlank
     @Size(min = 10, max = 100)
@@ -28,11 +29,12 @@ public class Message {
     @NotBlank
     @Size(min = 3, message = "Minimum {2} karakter hosszúnak kell lennie!")
     private String author;
+    
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
 
     public Message() {
         dateTime = LocalDateTime.now();
-
         id = prevId++;
     }
 
@@ -44,6 +46,7 @@ public class Message {
 
     public Message(String text, String author, LocalDateTime dateTime) {
         this();
+        
         this.text = text;
         this.author = author;
         this.dateTime = dateTime;
