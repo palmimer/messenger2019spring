@@ -51,7 +51,10 @@ and open the template in the editor.
             </table>
             <input type="submit" value="Keresés"/>
         </form>
-        <table>
+        <div data-th-if="${messages.empty}">
+            Nincs megjelenítendő üzenet!
+        </div>
+        <table data-th-if="${!messages.empty}">
             <thead>
                 <tr>
                     <th>Id</th>

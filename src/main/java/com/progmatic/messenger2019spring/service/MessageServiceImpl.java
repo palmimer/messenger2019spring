@@ -38,11 +38,10 @@ public class MessageServiceImpl {
 
     public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending) {
         int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
-        
         Comparator<Message> messageComparator = getMesageComparator(sortBy);
             
         List<Message> messagesToShow = messages.stream()
-                .filter(m -> author.isEmpty() ? true : m.getAuthor().equals(author))
+                .filter(m -> author.isEmpty() ? true : m.getAuthor().equalsIgnoreCase(author))
                 .filter(m -> m.getText().contains(text))
                 .filter(m -> startDate == null ? true : m.getDateTime().isAfter(startDate))
                 .filter(m -> endDate == null ? true : m.getDateTime().isBefore(endDate))
