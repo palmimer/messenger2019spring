@@ -70,4 +70,7 @@ public class MessageServiceImpl {
     }
 
 
+    public List<Message> getAllMessages() {
+        return new ArrayList<>(messages);
+    }
 }

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Messages</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <h1>Message</h1>
+        <table>
+                <tr>
+                    <td>Üzenetek száma a session-ben:</td>
+                    <td data-th-text="${userstats.messageCountInSesson}"></td>
+                </tr>
+                <tr>
+                    <td>Használt nevek a session-ben:</td>
+                    <td data-th-text="${#strings.listJoin(userstats.authorsInSession, ', ')} + ' (' + ${userstats.authorsInSession.size()} + 'db)'"></td>
+                </tr>
+                <tr>
+                    <td>Eddig írt üzenetek száma:</td>
+                    <td data-th-text="${userstats.messageCountForAllAuthorsInSession}"></td>
+                </tr>            
+            </table>
+    </body>
+</html>

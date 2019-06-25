@@ -66,7 +66,7 @@ public class MessageController {
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
     public String showCreateMessage(Model model) {
 
-        model.addAttribute("message", new Message("", userStatistics.getAuthor()));
+        model.addAttribute("message", new Message("", userStatistics.getLastAuthor()));
         return "newMessage";
     }
 
@@ -76,10 +76,18 @@ public class MessageController {
         if (bindingResult.hasErrors()) {
             return "newMessage";
         }
-
-        userStatistics.setAuthor(message.getAuthor());
+         
+        userStatistics.setLastAuthor(message.getAuthor());
+        userStatistics.addNewMessage(message);
         messageService.addNewMessage(message);
         return "redirect:/messages";
     }
 
+    
+    @RequestMapping(value = "/userstats", method = RequestMethod.GET)
+    public String showUserStatistics(Model model) {
+        
+        model.addAttribute("userstats", userStatistics);
+        return "userstats";
+    }
 }
