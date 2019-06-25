@@ -6,29 +6,68 @@ and open the template in the editor.
 -->
 <html>
     <head>
-        <title>Messages</title>
+        <title>Üzenetek</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
         <h1>Messages</h1>
-        <table>
-                <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Üzenet</th>
-                        <th>Küldő</th>
-                        <th>Dátum</th>
-                    </tr>
-                </thead>
-                <tr data-th-each="message: ${messages}">
-                    <td><a data-th-href="@{'/messages/'+${message.id}}" data-th-text="${message.id}"></a></td>
-                    <td data-th-text="${message.text}"></td>
-                    <td data-th-text="${message.author}"></td>
-                    <td data-th-text="${message.dateTime}"></td>
+        <form data-th-action="@{/messages}" method="get">
+            <table>
+                <tr>
+                    <td>Üzenet írója:</td>
+                    <td><input type="text" name="author"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Üzenet szövege:</td>
+                    <td><input type="text" name="text"/></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Üzenet keletkezése:</td>
+                    <td><input type="datetime-local" name="startDate"/></td>
+                    <td><input type="datetime-local" name="endDate"/></td>
+                </tr>
+                <tr>
+                    <td>Rendezés:</td>
+                    <td>
+                        <select name="sortBy">
+                            <option value="author">Szerző</option>
+                            <option value="text">Szöveg</option>
+                            <option value="date">Dátum</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="radio" name="ascending" value="true" checked/> Növekvő
+                        <input type="radio" name="ascending" value="false"/> Csökkenő
+                    </td>
+                </tr>
+                <tr>
+                    <td>Megjelenítendű üzenetek száma:</td>
+                    <td><input type="number" name="messageCount"/></td>
+                    <td></td>
                 </tr>
             </table>
-        
+            <input type="submit" value="Keresés"/>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Üzenet</th>
+                    <th>Küldő</th>
+                    <th>Dátum</th>
+                </tr>
+            </thead>
+            <tr data-th-each="message: ${messages}">
+                <td><a data-th-href="@{'/messages/'+${message.id}}" data-th-text="${message.id}"></a></td>
+                <td data-th-text="${message.text}"></td>
+                <td data-th-text="${message.author}"></td>
+                <td data-th-text="${message.dateTime}"></td>
+            </tr>
+        </table>
+
         <a data-th-href="@{messages/create}">New Message</a>
     </body>
 </html>

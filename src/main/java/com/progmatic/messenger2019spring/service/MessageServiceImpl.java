@@ -11,6 +11,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
@@ -35,18 +36,19 @@ public class MessageServiceImpl {
         messages.add(new Message("Meg még ez is", "Test"));
     }
 
-    public List<Message> listMessages(int messageCount, boolean ascending) {
+    public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending) {
         int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
-        List<Message> messagesToShow = messages.subList(0, Math.min(messages.size(), numOfMessagesToShow));
-
-//        Comparator<Message> comparator = ascending ? (m1, m2) -> m1.getAuthor().compareTo(m2.getAuthor()) :
-//                (m1, m2) -> m2.getAuthor().compareTo(m1.getAuthor());
-        Comparator<Message> comparator = Comparator.comparing(Message::getAuthor);
-        if (!ascending) {
-            comparator = comparator.reversed();
-        }
-
-        messagesToShow.sort(comparator);
+        
+        Comparator<Message> messageComparator = getMesageComparator(sortBy);
+            
+        List<Message> messagesToShow = messages.stream()
+                .filter(m -> author.isEmpty() ? true : m.getAuthor().equals(author))
+                .filter(m -> m.getText().contains(text))
+                .filter(m -> startDate == null ? true : m.getDateTime().isAfter(startDate))
+                .filter(m -> endDate == null ? true : m.getDateTime().isBefore(endDate))
+                .sorted(ascending ? messageComparator : messageComparator.reversed())
+                .limit(Math.min(messages.size(), numOfMessagesToShow))
+                .collect(Collectors.toList());
 
         return messagesToShow;
     }
@@ -59,4 +61,14 @@ public class MessageServiceImpl {
     public void addNewMessage(Message message) {
         messages.add(message);
     }
+    
+    private Comparator<Message> getMesageComparator(String by) {
+        switch (by) {
+            case "author": return Comparator.comparing(Message::getAuthor);
+            case "text": return Comparator.comparing(Message::getText);
+            default: return Comparator.comparing(Message::getDateTime);
+        }
+    }
+
+
 }
