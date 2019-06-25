@@ -5,13 +5,12 @@
  */
 package com.progmatic.messenger2019spring.controller;
 
+import com.progmatic.messenger2019spring.UserStatistics;
 import com.progmatic.messenger2019spring.domain.Message;
-import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
-import java.util.Comparator;
+import com.progmatic.messenger2019spring.service.MessageServiceImpl;
 import java.util.List;
 import javax.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,35 +26,25 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class MessageController {
+    
+    private MessageServiceImpl messageService;
+    private UserStatistics userStatistics;
+    
 
-    private List<Message> messages;
-
-    public MessageController() {
-        this.messages = new ArrayList<>();
-
-        messages.add(new Message("Hello there", "Obi wan", LocalDateTime.of(2019, Month.MARCH, 12, 17, 13, 0)));
-        messages.add(new Message("Programozni jó", "Progmatic"));
-        messages.add(new Message("Ez egy teszt üzenet", "Test"));
-        messages.add(new Message("Meg ez is", "Test"));
-        messages.add(new Message("Meg még ez is", "Test"));
+    @Autowired
+    public MessageController(MessageServiceImpl messageService, UserStatistics userStatistics) {
+        this.messageService = messageService;
+        this.userStatistics = userStatistics;
     }
+    
+    
 
     @RequestMapping(value = {"/", "/messages"}, method = RequestMethod.GET)
     public String listMessages(@RequestParam(value = "messageCount", defaultValue = "-1") int messageCount,
             @RequestParam(value = "ascending", defaultValue = "true") boolean ascending,
             Model model) {
-        int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
-        List<Message> messagesToShow = messages.subList(0, Math.min(messages.size(), numOfMessagesToShow));
-
-//        Comparator<Message> comparator = ascending ? (m1, m2) -> m1.getAuthor().compareTo(m2.getAuthor()) :
-//                (m1, m2) -> m2.getAuthor().compareTo(m1.getAuthor());
-
-        Comparator<Message> comparator = Comparator.comparing(Message::getAuthor);
-        if (!ascending) {
-            comparator = comparator.reversed();
-        }
         
-        messagesToShow.sort(comparator);
+        List<Message> messagesToShow = messageService.listMessages(messageCount, ascending);
         model.addAttribute("messages", messagesToShow);
 
         return "messages";
@@ -64,13 +53,15 @@ public class MessageController {
     @RequestMapping(value = "/messages/{messageId}", method = RequestMethod.GET)
     public String oneMessage(@PathVariable("messageId") int messageId, Model model) {
 
-        Message message = messages.stream().filter(m -> m.getId() == messageId).findFirst().get();
+        Message message = messageService.getMessageById(messageId);
         model.addAttribute("message", message);
         return "oneMessage";
     }
     
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
-    public String showCreateMessage(@ModelAttribute("message") Message message) {
+    public String showCreateMessage(Model model) {
+        
+        model.addAttribute("message", new Message("", userStatistics.getAuthor()));
         return "newMessage";
     }
     
@@ -80,8 +71,9 @@ public class MessageController {
         if (bindingResult.hasErrors()) {
             return "newMessage";
         }
-        
-        messages.add(message);
+         
+        userStatistics.setAuthor(message.getAuthor());
+        messageService.addNewMessage(message);
         return "redirect:/messages";
     }
 
