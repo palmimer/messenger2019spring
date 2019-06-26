@@ -25,9 +25,9 @@ public class Message {
     @Size(min = 10, max = 100)
     private String text;
     
-    @NotNull
-    @NotBlank
-    @Size(min = 3, message = "Minimum {2} karakter hosszúnak kell lennie!")
+//    @NotNull
+//    @NotBlank
+//    @Size(min = 3, message = "Minimum {2} karakter hosszúnak kell lennie!")
     private String author;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

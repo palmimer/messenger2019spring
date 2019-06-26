@@ -13,6 +13,8 @@ import java.util.List;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -66,7 +68,7 @@ public class MessageController {
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
     public String showCreateMessage(Model model) {
 
-        model.addAttribute("message", new Message("", userStatistics.getLastAuthor()));
+        model.addAttribute("message", new Message("", ""));
         return "newMessage";
     }
 
@@ -77,9 +79,14 @@ public class MessageController {
             return "newMessage";
         }
          
+        
+        User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        message.setAuthor(user.getUsername());
+        
+        messageService.addNewMessage(message);
+        
         userStatistics.setLastAuthor(message.getAuthor());
         userStatistics.addNewMessage(message);
-        messageService.addNewMessage(message);
         return "redirect:/messages";
     }
 
