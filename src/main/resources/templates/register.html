@@ -22,31 +22,60 @@
                 <div class="card">
                     <div class="card-header">
                         <h3>Register</h3>
-                        
+
                     </div>
                     <div class="card-body">
-                        <form data-th-action="@{/register}" method="post">
-                          
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                </div>
-                                <input type="text" class="form-control" placeholder="username" name="username">
+                        <form data-th-action="@{/register}" method="post" data-th-object="${registration}" novalidate>
+                            <div class="form-group">
 
-                            </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" data-th-errorclass="is-invalid" placeholder="Username" data-th-field="*{username}">
                                 </div>
-                                <input type="password" class="form-control" placeholder="password" name="password1">
+                                <small  data-th-if="${#fields.hasErrors('username')}" class="text-danger" data-th-errors="*{username}">Text Error</small>
                             </div>
-                            <div class="input-group form-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-at"></i></span>
+                                    </div>
+                                    <input type="email" class="form-control" data-th-errorclass="is-invalid" placeholder="Email" data-th-field="*{email}">
                                 </div>
-                                <input type="password" class="form-control" placeholder="confirm password" name="password2">
+                                <small data-th-if="${#fields.hasErrors('email')}" class="text-danger" data-th-errors="*{email}">Text Error</small>
                             </div>
-                            
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="password" data-th-errorclass="is-invalid" class="form-control" placeholder="Password" data-th-field="*{password1}">
+                                </div>
+                                <small data-th-if="${#fields.hasErrors('password1')}" class="text-danger" data-th-errors="*{password1}">Text Error</small>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-key"></i></span>
+                                    </div>
+                                    <input type="password" data-th-errorclass="is-invalid" class="form-control" placeholder="Confirm password" data-th-field="*{password2}">
+                                </div>
+                                <small data-th-if="${#fields.hasErrors('password2')}" class="text-danger" data-th-errors="*{password2}">Text Error</small>
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
+                                    </div>
+                                    <input type="date" data-th-errorclass="is-invalid" class="form-control"  data-th-field="*{birthday}">
+
+                                </div>
+                                <small data-th-if="${#fields.hasErrors('birthday')}" class="text-danger" data-th-errors="*{birthday}">Text Error</small>
+                            </div>
+
+
+
                             <div class="form-group">
                                 <input type="submit" value="Register" class="btn float-right login_btn">
                             </div>

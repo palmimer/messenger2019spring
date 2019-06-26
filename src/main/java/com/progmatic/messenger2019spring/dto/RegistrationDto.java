@@ -1,12 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.progmatic.messenger2019spring.dto;
 
+import java.time.LocalDate;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -15,12 +14,24 @@ import javax.validation.constraints.Size;
 public class RegistrationDto {
 
     @NotNull
-    @Size(min = 3)
+    @Size(min = 3, message = "Username must be at least {2} characters long!")
     private String username;
     @NotNull
+    @Size(min = 8, message = "Password must be at least {2} characters long!")
     private String password1;
+    
     @NotNull
+    @Size(min = 8, message = "Password must be at least {2} characters long!")
     private String password2;
+    
+    @NotNull
+    @NotBlank
+    @Email
+    private String email;
+    
+    @NotNull
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthday;
 
     public String getUsername() {
         return username;
@@ -44,6 +55,22 @@ public class RegistrationDto {
 
     public void setPassword2(String password2) {
         this.password2 = password2;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
     
     

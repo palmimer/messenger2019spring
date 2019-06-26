@@ -5,11 +5,13 @@
  */
 package com.progmatic.messenger2019spring.config;
 
+import com.progmatic.messenger2019spring.domain.User;
+import java.time.LocalDate;
+import java.time.Month;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,15 +29,15 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
         http
             .formLogin()
                 .loginPage("/login")
+                //.permitAll()
                 .defaultSuccessUrl("/messages", true)
-                .permitAll()
                 .and()
                 .logout()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/messages").permitAll()
+                .antMatchers("/messages", "/register", "/login").permitAll()
                 .antMatchers("/css/*", "/js/*", "/images/*").permitAll()
-                //.antMatchers("/messages/create").access("hasRole('ADMIN')")
+                .antMatchers("/messages/create").access("hasRole('ADMIN')")
                 .anyRequest().authenticated();
                 
     }
@@ -44,8 +46,10 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
     @Override
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user").password("password").roles("USER").build());
-        manager.createUser(User.withUsername("admin").password("password").roles("ADMIN").build());
+//        manager.createUser(User.withUsername("user").password("password").roles("USER").build());
+//        manager.createUser(User.withUsername("admin").password("password").roles("ADMIN").build());
+        manager.createUser(new User("user", "password", "test@email.com", LocalDate.of(1986, Month.MARCH,15), "ROLE_USER"));
+        manager.createUser(new User("admin", "password", "admin@email.com", LocalDate.of(1986, Month.MARCH,15), "ROLE_ADMIN"));
         return manager;
     }
     

@@ -31,10 +31,14 @@
                     <div class="card-body">
                         <form data-th-action="@{/login}" method="post">
                             <div data-th-if="${param.error}" class="alert alert-danger">    
-                                Invalid username and password.
+                                Invalid username or password.
                             </div>
                             <div data-th-if="${param.logout}" class="alert alert-success"> 
                                 You have been logged out.
+                            </div>
+                            <div data-th-if="${param.registered}" class="alert alert-success text-center"> 
+                                Your registration was successful!<br>
+                                Please Sign in!
                             </div>
                             <div class="input-group form-group">
                                 <div class="input-group-prepend">
