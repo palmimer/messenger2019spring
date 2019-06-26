@@ -12,7 +12,6 @@ and open the template in the editor.
     </head>
     <body>
         <h1>Messages</h1>
-        <<<<<<< HEAD
         <form data-th-action="@{/messages}" method="get">
             <table>
                 <tr>
@@ -72,6 +71,7 @@ and open the template in the editor.
             </tr>
         </table>
 
-        <a data-th-href="@{messages/create}">New Message</a>
+        <a data-th-href="@{/messages/create}">New Message</a>
+        <a data-th-href="@{/userstats}">User Statistics</a>
     </body>
 </html>
