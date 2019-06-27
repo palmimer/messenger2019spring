@@ -32,6 +32,24 @@ public class Message {
     
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateTime;
+    
+    private boolean deleted;
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public static int getPrevId() {
+        return prevId;
+    }
+
+    public static void setPrevId(int prevId) {
+        Message.prevId = prevId;
+    }
 
     public Message() {
         dateTime = LocalDateTime.now();

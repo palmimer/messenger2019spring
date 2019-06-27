@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  *
@@ -36,6 +35,7 @@ public class MessageServiceImpl {
         messages.add(new Message("Meg még ez is", "Test"));
     }
 
+    @PostFilter("hasRole('ADMIN') or hasRole('USER') and filterObject.deleted == false")
     public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending) {
         int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
         Comparator<Message> messageComparator = getMesageComparator(sortBy);
@@ -73,4 +73,11 @@ public class MessageServiceImpl {
     public List<Message> getAllMessages() {
         return new ArrayList<>(messages);
     }
+    
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteMessage(int id) {
+        Message messageToDelete = getMessageById(id);
+        
+        messageToDelete.setDeleted(true);
+     }
 }

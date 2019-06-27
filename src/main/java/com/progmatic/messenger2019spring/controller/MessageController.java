@@ -7,6 +7,7 @@ package com.progmatic.messenger2019spring.controller;
 
 import com.progmatic.messenger2019spring.UserStatistics;
 import com.progmatic.messenger2019spring.domain.Message;
+import com.progmatic.messenger2019spring.dto.MessageDto;
 import com.progmatic.messenger2019spring.service.MessageServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,30 +65,35 @@ public class MessageController {
         model.addAttribute("message", message);
         return "oneMessage";
     }
+    
+    @RequestMapping(value = "/messages/delete/{messageId}", method = RequestMethod.POST)
+    public String deleteMessage(@PathVariable("messageId") int messageId) {
+
+        messageService.deleteMessage(messageId);
+        return "redirect:/messages";
+    }
 
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
     public String showCreateMessage(Model model) {
 
-        model.addAttribute("message", new Message("", ""));
+        model.addAttribute("message", new MessageDto(""));
         return "newMessage";
     }
 
     @RequestMapping(value = "/messages/create", method = RequestMethod.POST)
-    public String createMessage(@Valid @ModelAttribute("message") Message message, BindingResult bindingResult) {
+    public String createMessage(@Valid @ModelAttribute("message") MessageDto message, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             return "newMessage";
         }
-         
         
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        message.setAuthor(user.getUsername());
+
+        Message newMessage = new Message(message.getText(), user.getUsername());
         
-        
-        messageService.addNewMessage(message);
-        
-        userStatistics.setLastAuthor(message.getAuthor());
-        userStatistics.addNewMessage(message);
+        messageService.addNewMessage(newMessage);
+        userStatistics.setLastAuthor(newMessage.getAuthor());
+        userStatistics.addNewMessage(newMessage);
         return "redirect:/messages";
     }
 

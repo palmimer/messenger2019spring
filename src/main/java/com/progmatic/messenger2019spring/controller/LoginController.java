@@ -45,6 +45,7 @@ public class LoginController {
         if (bindingResult.hasErrors() || registrationHasErrors(registration, bindingResult)) {
             return "register";
         }
+        
         userDetailsService.createUser(new User(registration.getUsername(), registration.getPassword1(), 
                 registration.getEmail(), registration.getBirthday(), "ROLE_USER"));
          

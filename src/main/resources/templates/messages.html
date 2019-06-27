@@ -11,6 +11,9 @@ and open the template in the editor.
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
+        <form data-th-action="@{/logout}" method="post">
+            <input type="submit" value="Logout"/>
+        </form>
         <h1>Messages</h1>
         <form data-th-action="@{/messages}" method="get">
             <table>
@@ -61,6 +64,8 @@ and open the template in the editor.
                     <th>Üzenet</th>
                     <th>Küldő</th>
                     <th>Dátum</th>
+                    <th data-sec-authorize="hasRole('ADMIN')">Deleted</th>
+                    <th data-sec-authorize="hasRole('ADMIN')"></th>
                 </tr>
             </thead>
             <tr data-th-each="message: ${messages}">
@@ -68,6 +73,9 @@ and open the template in the editor.
                 <td data-th-text="${message.text}"></td>
                 <td data-th-text="${message.author}"></td>
                 <td data-th-text="${{message.dateTime}}"></td>
+                <td data-sec-authorize="hasRole('ADMIN')" data-th-text="${message.deleted}"></td>
+                <td data-sec-authorize="hasRole('ADMIN')"><form data-th-action="@{'/messages/delete/'+${message.id}}" method="post"><input type="submit" value="Delete"/></form></td>
+
             </tr>
         </table>
 
