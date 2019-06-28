@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestWrapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +26,7 @@ public class MessageServiceImpl {
 
     private List<Message> messages;
 
+    @Autowired
     public MessageServiceImpl() {
         this.messages = new ArrayList<>();
 
@@ -35,8 +37,8 @@ public class MessageServiceImpl {
         messages.add(new Message("Meg még ez is", "Test"));
     }
 
-    @PostFilter("hasRole('ADMIN') or hasRole('USER') and filterObject.deleted == false")
-    public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending) {
+    //@PostFilter("hasRole('ADMIN') or hasRole('USER') and filterObject.deleted == false")
+    public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending, boolean showDeleted) {
         int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
         Comparator<Message> messageComparator = getMesageComparator(sortBy);
             
@@ -45,6 +47,7 @@ public class MessageServiceImpl {
                 .filter(m -> m.getText().contains(text))
                 .filter(m -> startDate == null ? true : m.getDateTime().isAfter(startDate))
                 .filter(m -> endDate == null ? true : m.getDateTime().isBefore(endDate))
+                .filter(m -> showDeleted ? true : !m.isDeleted())
                 .sorted(ascending ? messageComparator : messageComparator.reversed())
                 .limit(Math.min(messages.size(), numOfMessagesToShow))
                 .collect(Collectors.toList());

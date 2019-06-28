@@ -11,6 +11,8 @@ import com.progmatic.messenger2019spring.dto.MessageDto;
 import com.progmatic.messenger2019spring.service.MessageServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -50,9 +52,12 @@ public class MessageController {
             @RequestParam(value = "sortBy", defaultValue = "date") String sortBy,
             @RequestParam(value = "messageCount", defaultValue = "-1") int messageCount,
             @RequestParam(value = "ascending", defaultValue = "true") boolean ascending,
-            Model model) {
+            @RequestParam(value = "showDeleted", defaultValue = "false") boolean showDeleted,
+            Model model, HttpServletRequest servletRequest) {
         
-        List<Message> messagesToShow = messageService.filterMessages(author, text, startDate, endDate, sortBy, messageCount, ascending);
+        List<Message> messagesToShow = messageService.filterMessages(author, text, startDate, endDate, sortBy, messageCount, ascending, showDeleted);
+        messagesToShow = messagesToShow.stream().filter(m -> servletRequest.isUserInRole("ADMIN") || servletRequest.isUserInRole("USER") && !m.isDeleted()).collect(Collectors.toList());
+
         model.addAttribute("messages", messagesToShow);
 
         return "messages";
@@ -75,7 +80,6 @@ public class MessageController {
 
     @RequestMapping(value = "/messages/create", method = RequestMethod.GET)
     public String showCreateMessage(Model model) {
-
         model.addAttribute("message", new MessageDto(""));
         return "newMessage";
     }
