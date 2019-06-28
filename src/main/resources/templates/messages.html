@@ -9,82 +9,150 @@ and open the template in the editor.
         <title>Üzenetek</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     </head>
     <body>
-        <form data-th-action="@{/logout}" method="post">
-            <input type="submit" value="Logout"/>
-        </form>
-        <h1>Messages</h1>
-        <form data-th-action="@{/messages}" method="get">
-            <table>
-                <tr>
-                    <td>Üzenet írója:</td>
-                    <td><input type="text" name="author"/></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Üzenet szövege:</td>
-                    <td><input type="text" name="text"/></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Üzenet keletkezése:</td>
-                    <td><input type="datetime-local" name="startDate"/></td>
-                    <td><input type="datetime-local" name="endDate"/></td>
-                </tr>
-                <tr>
-                    <td>Rendezés:</td>
-                    <td>
-                        <select name="sortBy">
-                            <option value="author">Szerző</option>
-                            <option value="text">Szöveg</option>
-                            <option value="date">Dátum</option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="radio" name="ascending" value="true" checked/> Növekvő
-                        <input type="radio" name="ascending" value="false"/> Csökkenő
-                    </td>
-                </tr>
-                <tr>
-                    <td>Megjelenítendű üzenetek száma:</td>
-                    <td><input type="number" name="messageCount"/></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Törölt üzenetek megjelenítése:</td>
-                    <td><input type="checkbox" name="showDeleted" checked/></td>
-                    <td></td>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" data-th-href="@{/}">MesengerApp</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    <li class="nav-item active">
+                        <a class="nav-link" data-th-href="@{/messages}">Messages</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-th-href="@{/messages/create}">New message</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" data-th-href="@{/userstats}">User statistics</a>
+                    </li>
+                </ul>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span data-sec-authentication="name"></span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <form data-th-action="@{/logout}" method="post">
+                            <button class="dropdown-item" type="submit">Logout</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <h1 class="my-4">Messages</h1>
+            <div class="col-10 offset-1 mb-5">
+
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            Keresés</button>
+                    </div>
+
+                    <div id="collapseOne" class="collapse" aria-labelledby="headingOne" >
+                        <div class="card-body">
+                            <form data-th-action="@{/messages}" method="get">
+
+                                <div class="form-group row">
+                                    <label for="searchAuthor" class="col-sm-4 col-form-label col-form-label-sm">Üzenet írója:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text"  name="author" class="form-control form-control-sm" id="searchAuthor" placeholder="Szerző">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="searchText" class="col-sm-4 col-form-label col-form-label-sm">Üzenet szövege:</label>
+                                    <div class="col-sm-8">
+                                        <input type="text"  name="text" class="form-control form-control-sm" id="searchText" placeholder="Szöveg">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="searchStartDate" class="col-sm-4 col-form-label col-form-label-sm">Üzenet keletkezése:</label>
+                                    <div class="col-sm-4">
+                                        <input type="datetime-local"  name="endDate" class="form-control form-control-sm">
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input type="datetime-local"  name="startDate" class="form-control form-control-sm" id="searchStartDate">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="sortBy" class="col-sm-4 col-form-label col-form-label-sm">Rendezés:</label>
+                                    <div class="col-sm-4">
+                                        <select name="sortBy"  class="form-control form-control-sm" id="sortBy">
+                                            <option value="author">Szerző</option>
+                                            <option value="text">Szöveg</option>
+                                            <option value="date">Dátum</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="ascending" id="inlineRadio1" value="true" checked>
+                                            <label class="form-check-label col-form-label-sm" for="inlineRadio1">Növekvő</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="ascending" id="inlineRadio2" value="false">
+                                            <label class="form-check-label col-form-label-sm" for="inlineRadio2">Csökkenő</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="searchStartDate" class="col-sm-4 col-form-label col-form-label-sm">Megjelenítendő üzenetek száma:</label>
+                                    <div class="col-sm-8">
+                                        <input type="number" name="messageCount" class="form-control form-control-sm"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="form-check">
+                                        <input class="form-check-input form-control-sm" type="checkbox" id="inlineCheckbox1" name="showDeleted" checked>
+
+                                        <label class="form-check-label col-form-label-sm" for="inlineCheckbox1">Törölt üzenetek megjelenítése</label>
+                                    </div>
+                                </div>
+
+
+
+                                <button type="submit" class="btn btn-primary">Keresés</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div data-th-if="${messages.empty}">
+                Nincs megjelenítendő üzenet!
+            </div>
+            <table data-th-if="${!messages.empty}" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Üzenet</th>
+                        <th>Küldő</th>
+                        <th>Dátum</th>
+                        <th data-sec-authorize="hasRole('ADMIN')">Deleted</th>
+                        <th data-sec-authorize="hasRole('ADMIN')"></th>
+                    </tr>
+                </thead>
+                <tr data-th-each="message: ${messages}" data-th-classappend="${message.deleted ? 'bg-danger' : ''}">
+                    <td><a data-th-href="@{'/messages/'+${message.id}}" data-th-text="${message.id}"></a></td>
+                    <td data-th-text="${message.text}"></td>
+                    <td data-th-text="${message.author}"></td>
+                    <td data-th-text="${{message.dateTime}}"></td>
+                    <td data-sec-authorize="hasRole('ADMIN')" data-th-text="${message.deleted}"></td>
+                    <td data-sec-authorize="hasRole('ADMIN')"><form data-th-action="@{'/messages/delete/'+${message.id}}" method="post"><input type="submit" value="Delete"/></form></td>
+
                 </tr>
             </table>
-            <input type="submit" value="Keresés"/>
-        </form>
-        <div data-th-if="${messages.empty}">
-            Nincs megjelenítendő üzenet!
         </div>
-        <table data-th-if="${!messages.empty}">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Üzenet</th>
-                    <th>Küldő</th>
-                    <th>Dátum</th>
-                    <th data-sec-authorize="hasRole('ADMIN')">Deleted</th>
-                    <th data-sec-authorize="hasRole('ADMIN')"></th>
-                </tr>
-            </thead>
-            <tr data-th-each="message: ${messages}">
-                <td><a data-th-href="@{'/messages/'+${message.id}}" data-th-text="${message.id}"></a></td>
-                <td data-th-text="${message.text}"></td>
-                <td data-th-text="${message.author}"></td>
-                <td data-th-text="${{message.dateTime}}"></td>
-                <td data-sec-authorize="hasRole('ADMIN')" data-th-text="${message.deleted}"></td>
-                <td data-sec-authorize="hasRole('ADMIN')"><form data-th-action="@{'/messages/delete/'+${message.id}}" method="post"><input type="submit" value="Delete"/></form></td>
-
-            </tr>
-        </table>
-
-        <a data-th-href="@{/messages/create}">New Message</a>
-        <a data-th-href="@{/userstats}">User Statistics</a>
     </body>
 </html>

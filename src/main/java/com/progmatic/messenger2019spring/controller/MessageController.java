@@ -56,7 +56,7 @@ public class MessageController {
             Model model, HttpServletRequest servletRequest) {
         
         List<Message> messagesToShow = messageService.filterMessages(author, text, startDate, endDate, sortBy, messageCount, ascending, showDeleted);
-        messagesToShow = messagesToShow.stream().filter(m -> servletRequest.isUserInRole("ADMIN") || servletRequest.isUserInRole("USER") && !m.isDeleted()).collect(Collectors.toList());
+        //messagesToShow = messagesToShow.stream().filter(m -> servletRequest.isUserInRole("ADMIN") || servletRequest.isUserInRole("USER") && !m.isDeleted()).collect(Collectors.toList());
 
         model.addAttribute("messages", messagesToShow);
 
