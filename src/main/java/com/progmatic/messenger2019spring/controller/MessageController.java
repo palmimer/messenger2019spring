@@ -7,7 +7,6 @@ package com.progmatic.messenger2019spring.controller;
 
 import com.progmatic.messenger2019spring.UserStatistics;
 import com.progmatic.messenger2019spring.domain.Message;
-import com.progmatic.messenger2019spring.domain.User;
 import com.progmatic.messenger2019spring.service.MessageServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +14,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -82,6 +82,7 @@ public class MessageController {
         
         User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         message.setAuthor(user.getUsername());
+        
         
         messageService.addNewMessage(message);
         

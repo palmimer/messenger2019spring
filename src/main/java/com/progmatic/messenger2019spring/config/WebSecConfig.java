@@ -37,7 +37,7 @@ public class WebSecConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/messages", "/register", "/login").permitAll()
                 .antMatchers("/css/*", "/js/*", "/images/*").permitAll()
-                .antMatchers("/messages/create").access("hasRole('ADMIN')")
+                //.antMatchers("/messages/create").access("hasRole('ADMIN')")
                 .anyRequest().authenticated();
                 
     }
