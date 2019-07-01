@@ -11,7 +11,6 @@ import com.progmatic.messenger2019spring.dto.MessageDto;
 import com.progmatic.messenger2019spring.service.MessageServiceImpl;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
