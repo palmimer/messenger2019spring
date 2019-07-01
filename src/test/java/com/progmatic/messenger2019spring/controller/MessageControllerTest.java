@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.progmatic.messenger2019spring.controller;
 
 import com.progmatic.messenger2019spring.UserStatistics;
@@ -50,7 +45,7 @@ public class MessageControllerTest {
         MockitoAnnotations.initMocks(this);
 
         messageService = Mockito.mock(MessageServiceImpl.class); //Mockolunk egy MessageServiceImpl-t. A @Mock annotacioval is lehetne
-        
+
         List<Message> messagesToReturn = new ArrayList<>(); //Letrehozzuk a teszt listankat
         messagesToReturn.add(new Message("Test Message1", "Test1"));
         messagesToReturn.add(new Message("Test Message2", "Test2"));
@@ -75,7 +70,7 @@ public class MessageControllerTest {
     @Test
     public void testListMessages() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/messages"))                                          //Inditunk egy get request-et a /messages cimre
+                .get("/messages")) //Inditunk egy get request-et a /messages cimre
                 .andExpect(MockMvcResultMatchers.view().name("messages")); //A controller altal visszaadott view-neve "messages" kell legyen. Ezt varjuk el
     }
 
@@ -103,7 +98,7 @@ public class MessageControllerTest {
                 Mockito.anyBoolean());
 
         Mockito.verifyNoMoreInteractions(messageService); //Es ezen kivul nem hivtak mas metodust a messageService-en
-        
+
 //        List<Message> returnedMessages = (List<Message>) result.getModelAndView()
 //                .getModel().get("messages");
 //        
@@ -111,15 +106,43 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void testOneMessage() {
+    public void testOneMessage() throws Exception {
+        Mockito.when(messageService.getMessageById(0)).thenReturn(new Message("0. Üzenet", "User"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/messages/0"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("oneMessage"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("message"))
+                .andExpect(MockMvcResultMatchers.model().attribute("message", Matchers.allOf(
+                        Matchers.hasProperty("author", Matchers.is("User")),
+                        Matchers.hasProperty("text", Matchers.is("0. Üzenet"))
+                )));
+
+        Mockito.verify(messageService, Mockito.times(1)).getMessageById(0);
+        Mockito.verifyNoMoreInteractions(messageService);
     }
 
     @Test
-    public void testDeleteMessage() {
+    public void testDeleteMessage() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/messages/delete/0"))
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/messages"));
+        
+        Mockito.verify(messageService, Mockito.times(1)).deleteMessage(0);
+        Mockito.verifyNoMoreInteractions(messageService);
     }
 
     @Test
-    public void testShowCreateMessage() {
+    public void testShowCreateMessage() throws Exception {
+        Mockito.when(messageService.getMessageById(0)).thenReturn(new Message("0. Üzenet", "User"));
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/messages/create"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("newMessage"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("message"))
+                .andExpect(MockMvcResultMatchers.model().attribute("message", Matchers.hasProperty("text", Matchers.is(""))));
+
     }
 
     @Test
@@ -127,7 +150,9 @@ public class MessageControllerTest {
     public void testCreateMessage() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/messages/create")
-                .param("text", "Ez egy szöveg")); //Egy post request-et kuldunk, ahol megadjuk az uzenet szoveget.
+                .param("text", "Ez egy szöveg")) //Egy post request-et kuldunk, ahol megadjuk az uzenet szoveget.
+                .andExpect(MockMvcResultMatchers.status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/messages"));
 
         ArgumentCaptor<Message> messageParam = ArgumentCaptor.forClass(Message.class); //Ez az objektum fogja majd elkapni a MessageController altal a messageService addNewMessage metodusanak atadott uj Message objektumot
         Mockito.verify(messageService, times(1)).addNewMessage(messageParam.capture()); //itt
@@ -139,7 +164,18 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void testShowUserStatistics() {
+    @WithMockUser(roles = "USER", username = "Sanyi")
+    public void testCreateMessageValidation() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                .post("/messages/create")
+                .param("text", "Rövid"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("newMessage"))
+                .andExpect(MockMvcResultMatchers.model().attributeExists("message"))
+                .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("message", "text"));
+
+        Mockito.verify(messageService, Mockito.never()).addNewMessage(Mockito.any());
+        verifyNoMoreInteractions(messageService);
     }
 
 }
