@@ -6,13 +6,14 @@
 package com.progmatic.messenger2019spring.service;
 
 import com.progmatic.messenger2019spring.domain.Message;
+import com.progmatic.messenger2019spring.domain.User;
 import java.time.LocalDateTime;
-import java.time.Month;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,24 +26,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class MessageServiceImpl {
 
-    private List<Message> messages;
-
-    @Autowired
-    public MessageServiceImpl() {
-        this.messages = new ArrayList<>();
-
-        messages.add(new Message("Hello there", "Obi wan", LocalDateTime.of(2019, Month.MARCH, 12, 17, 13, 0)));
-        messages.add(new Message("Programozni jó", "Progmatic"));
-        messages.add(new Message("Ez egy teszt üzenet", "Test"));
-        messages.add(new Message("Meg ez is", "Test"));
-        messages.add(new Message("Meg még ez is", "Test"));
-    }
+    @PersistenceContext
+    private EntityManager em;
 
     @PostFilter("hasRole('ADMIN') or filterObject.deleted == false")
     public List<Message> filterMessages(String author, String text, LocalDateTime startDate, LocalDateTime endDate, String sortBy, int messageCount, boolean ascending, boolean showDeleted) {
+
+        List<Message> messages = getAllMessages();
+
         int numOfMessagesToShow = messageCount < 0 ? messages.size() : messageCount;
         Comparator<Message> messageComparator = getMesageComparator(sortBy);
-            
+
         List<Message> messagesToShow = messages.stream()
                 .filter(m -> author.isEmpty() ? true : m.getAuthor().equalsIgnoreCase(author))
                 .filter(m -> m.getText().contains(text))
@@ -58,31 +52,37 @@ public class MessageServiceImpl {
 
     @PostAuthorize("hasRole('ADMIN') or !returnObject.deleted")
     public Message getMessageById(int messageId) {
-        Message message = messages.stream().filter(m -> m.getId() == messageId).findFirst().get();
+        Message message = em.find(Message.class, messageId);
         return message;
     }
 
+    @Transactional
     public void addNewMessage(Message message) {
-        messages.add(message);
+        em.persist(message);
     }
-    
+
     private Comparator<Message> getMesageComparator(String by) {
         switch (by) {
-            case "author": return Comparator.comparing(Message::getAuthor);
-            case "text": return Comparator.comparing(Message::getText);
-            default: return Comparator.comparing(Message::getDateTime);
+            case "author":
+                return Comparator.comparing(Message::getAuthor);
+            case "text":
+                return Comparator.comparing(Message::getText);
+            default:
+                return Comparator.comparing(Message::getDateTime);
         }
     }
 
-
     public List<Message> getAllMessages() {
-        return new ArrayList<>(messages);
+        List<Message> messages = em.createQuery("SELECT m FROM Message m", Message.class).getResultList();
+
+        return messages;
     }
-    
+
     @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
     public void deleteMessage(int id) {
         Message messageToDelete = getMessageById(id);
-        
+
         messageToDelete.setDeleted(true);
-     }
+    }
 }

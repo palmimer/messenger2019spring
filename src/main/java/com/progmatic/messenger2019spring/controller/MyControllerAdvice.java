@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class MyControllerAdvice {
 
-    @ExceptionHandler(Exception.class)
-    public String handleErrors(Exception ex, Model model) {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(os);
-        ex.printStackTrace(ps);
-        String output = os.toString();
-        model.addAttribute("exceptionMessage", output);
-        return "error";
-    }
+//    @ExceptionHandler(Exception.class)
+//    public String handleErrors(Exception ex, Model model) {
+//        ByteArrayOutputStream os = new ByteArrayOutputStream();
+//        PrintStream ps = new PrintStream(os);
+//        ex.printStackTrace(ps);
+//        String output = os.toString();
+//        model.addAttribute("exceptionMessage", output);
+//        return "error";
+//    }
 }

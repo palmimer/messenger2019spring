@@ -5,29 +5,30 @@
  */
 package com.progmatic.messenger2019spring.domain;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
  * @author Varga János
  */
-public class Message {
-    private static int prevId;
+@Entity
+public class Message implements Serializable {
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @NotNull
-    @NotBlank
-    @Size(min = 10, max = 100)
+
     private String text;
     
-//    @NotNull
-//    @NotBlank
-//    @Size(min = 3, message = "Minimum {2} karakter hosszúnak kell lennie!")
     private String author;
     
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -43,17 +44,9 @@ public class Message {
         this.deleted = deleted;
     }
 
-    public static int getPrevId() {
-        return prevId;
-    }
-
-    public static void setPrevId(int prevId) {
-        Message.prevId = prevId;
-    }
 
     public Message() {
         dateTime = LocalDateTime.now();
-        id = prevId++;
     }
 
     public Message(String text, String author) {
